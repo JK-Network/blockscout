@@ -24,7 +24,8 @@ defmodule BlockScoutWeb.AddressChannel do
     "internal_transaction",
     "transaction",
     "verification_result",
-    "token_transfer"
+    "token_transfer", 
+    "pending_transaction"
   ])
 
   {:ok, burn_address_hash} = Chain.string_to_address_hash("0x0000000000000000000000000000000000000000")
