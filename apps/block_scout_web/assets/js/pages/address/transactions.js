@@ -90,12 +90,15 @@ if ($('[data-page="address-transactions"]').length) {
       type: 'RECEIVED_NEW_TRANSACTION',
       msg: humps.camelizeKeys(msg)
     })
+    console.log(msg)
   })
   addressChannel.on('pending_transaction', (msg) => {
     store.dispatch({
       type: 'RECEIVED_NEW_TRANSACTION',
       msg: humps.camelizeKeys(msg)
     })
+    console.log(msg)
+    console.log("wqerty")
   })
 
   const rewardsChannel = subscribeChannel(`rewards:${addressHash}`)
