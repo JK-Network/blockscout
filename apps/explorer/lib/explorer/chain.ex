@@ -403,7 +403,7 @@ defmodule Explorer.Chain do
     
 
     necessity_by_association = Keyword.get(options, :necessity_by_association, %{})
-    #txs_ = 
+    txs_ = 
     Transaction
     |> page_pending_transaction(paging_options)
     |> limit(^paging_options.page_size)
@@ -412,17 +412,17 @@ defmodule Explorer.Chain do
     |> join_associations(necessity_by_association)
     |> preload([{:token_transfers, [:token, :from_address, :to_address]}])
     |> Repo.all()
-    #[txs_|txs]
+    [txs_|txs]
   end
 
   def pending_transactions_query_(query, address_id) do
     from(transaction in query,
       where: is_nil(transaction.block_hash) and 
       (is_nil(transaction.error) or transaction.error != "dropped/replaced") 
-      #and 
-      #(transaction.from_address_hash == ^address_id or 
-      #transaction.to_address_hash == ^6address_id or 
-      #transaction.created_contract_address_hash == ^address_id)
+      and 
+      (transaction.from_address_hash == ^address_id or 
+      transaction.to_address_hash == ^6address_id or 
+      transaction.created_contract_address_hash == ^address_id)
     )
   end
 
