@@ -348,7 +348,8 @@ defmodule Explorer.Chain do
           %{payout_key: block_miner_payout_address} = Reward.get_validator_payout_key_by_mining(address_hash)
 
           if block_miner_payout_address && address_hash == block_miner_payout_address do
-            transactions_with_rewards_results(address_hash, options, paging_options)
+            #transactions_with_rewards_results(address_hash, options, paging_options)
+            address_to_transactions_without_rewards(address_hash, options)
           else
             address_to_transactions_without_rewards(address_hash, options)
           end
@@ -416,7 +417,7 @@ defmodule Explorer.Chain do
 
   def pending_transactions_query_(query, address_id) do
     from(transaction in query,
-      where: is_nil(transaction.block_hash) and (is_nil(transaction.error) or transaction.error != "dropped/replaced") and (transaction.from_address_hash == ^address_id or transaction.to_address_hash == ^address_id or transaction.created_contract_address_hash == ^address_id)
+      where: is_nil(transaction.block_hash) and (is_nil(transaction.error) or transaction.error != "dropped/replaced") and (transaction.from_address_hash == address_id or transaction.to_address_hash == address_id or transaction.created_contract_address_hash == address_id)
     )
   end
 
