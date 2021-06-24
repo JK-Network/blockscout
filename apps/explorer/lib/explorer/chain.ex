@@ -2847,29 +2847,9 @@ defmodule Explorer.Chain do
     |> Repo.all()
   end
 
-  def recent_pending_transactions(address_id, options \\ []) when is_list(options) do
-    necessity_by_association = Keyword.get(options, :necessity_by_association, %{})
-    paging_options = Keyword.get(options, :paging_options, @default_paging_options)
-
-    Transaction
-    |> page_pending_transaction(paging_options)
-    |> limit(^paging_options.page_size)
-    |> pending_transactions_query(address_id)
-    |> order_by([transaction], desc: transaction.inserted_at, desc: transaction.hash)
-    |> join_associations(necessity_by_association)
-    |> preload([{:token_transfers, [:token, :from_address, :to_address]}])
-    |> Repo.all()
-  end
-
   def pending_transactions_query(query) do
     from(transaction in query,
       where: is_nil(transaction.block_hash) and (is_nil(transaction.error) or transaction.error != "dropped/replaced")
-    )
-  end
-
-  def pending_transactions_query(query, address_id) do
-    from(transaction in query,
-      where: is_nil(transaction.block_hash) and (is_nil(transaction.error) or transaction.error != "dropped/replaced") and (transaction.from_address_hash == ^address_id or transaction.to_address_hash == ^address_id or transaction.created_contract_address_hash == ^address_id)
     )
   end
 
