@@ -38,7 +38,7 @@ defmodule BlockScoutWeb.AddressTransactionController do
 
       results_plus_one = Chain.address_to_mined_transactions_with_rewards(address_hash, options)
       {results, next_page} = split_list_by_page(results_plus_one)
-
+      IO.puts results_plus_one
       next_page_url =
         case next_page_params(next_page, results, params) do
           nil ->
