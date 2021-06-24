@@ -17,8 +17,9 @@ defmodule BlockScoutWeb.AddressTransactionController do
     necessity_by_association: %{
       [created_contract_address: :names] => :optional,
       [from_address: :names] => :optional,
-      [to_address: :names] => :optional,
-      :block => :required
+      [to_address: :names] => :optional
+      #,
+      #:block => :required
     }
   ]
 
