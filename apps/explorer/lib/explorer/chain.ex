@@ -392,13 +392,33 @@ defmodule Explorer.Chain do
 
   def address_to_transactions_without_rewards(address_hash, options) do
     paging_options = Keyword.get(options, :paging_options, @default_paging_options)
-
+    txs = 
     address_hash
     |> address_to_transactions_tasks(options)
     |> wait_for_address_transactions()
-#    |> Enum.sort_by(&{&1.block_number, &1.index}, &>=/2)
+    |> Enum.sort_by(&{&1.block_number, &1.index}, &>=/2)
     |> Enum.dedup_by(& &1.hash)
     |> Enum.take(paging_options.page_size)
+    
+
+    necessity_by_association = Keyword.get(options, :necessity_by_association, %{})
+    paging_options = Keyword.get(options, :paging_options, @default_paging_options)
+    txs_ = 
+    Transaction
+    |> page_pending_transaction(paging_options)
+    |> limit(^paging_options.page_size)
+    |> pending_transactions_query_(address_hash)
+    |> order_by([transaction], desc: transaction.inserted_at, desc: transaction.hash)
+    |> join_associations(necessity_by_association)
+    |> preload([{:token_transfers, [:token, :from_address, :to_address]}])
+    |> Repo.all()
+    [txs_|txs]
+  end
+
+  def pending_transactions_query_(query, address_id) do
+    from(transaction in query,
+      where: is_nil(transaction.block_hash) and (is_nil(transaction.error) or transaction.error != "dropped/replaced") and (transaction.from_address_hash == ^address_id or transaction.to_address_hash == ^address_id or transaction.created_contract_address_hash == ^address_id)
+    )
   end
 
   def address_to_mined_transactions_without_rewards(address_hash, options) do
