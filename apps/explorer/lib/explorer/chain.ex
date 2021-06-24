@@ -396,7 +396,7 @@ defmodule Explorer.Chain do
     address_hash
     |> address_to_transactions_tasks(options)
     |> wait_for_address_transactions()
-    |> Enum.sort_by(&{&1.block_number, &1.index}, &>=/2)
+#    |> Enum.sort_by(&{&1.block_number, &1.index}, &>=/2)
     |> Enum.dedup_by(& &1.hash)
     |> Enum.take(paging_options.page_size)
   end
